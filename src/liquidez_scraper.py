@@ -31,35 +31,37 @@ def fetch_liquidez_table() -> List[List[str]]:
             datos.append(celdas)
     return datos
 
-def save_to_csv(data: List[List[str]], path: str):
+def save_to_csv(data: List[List[str]], folder: str):
     """
-    Guarda los datos extraídos en un archivo CSV en la ruta indicada.
-    Si el archivo ya existe, concatena los datos nuevos y antiguos y elimina duplicados por la columna de fecha.
-    Además, agrega una columna 'data-liquidez-fecha' con la fecha de la carpeta.
+    Guarda los datos extraídos en un archivo CSV en la carpeta indicada, con nombre datos_YYYY-MM-DD.csv.
+    Solo guarda un nuevo archivo si la data es diferente a la última guardada en la carpeta.
+    El CSV solo contiene la data original extraída de la web (sin columnas adicionales).
     """
-    # Extraer la fecha de la ruta (asume formato .../AAAA-MM-DD/datos.csv)
-    fecha = os.path.basename(os.path.dirname(path))
-    # Añadir la columna de fecha a cada fila de datos (excepto encabezado si existe)
-    data_con_fecha = []
-    for i, fila in enumerate(data):
-        if i == 0 and (fila[0].lower().startswith('fecha') or fila[0].lower().startswith('ene')):
-            # Encabezado
-            data_con_fecha.append(fila + ['data-liquidez-fecha'])
-        else:
-            data_con_fecha.append(fila + [fecha])
-    # Guardar temporalmente el scraping
+    import glob
+    from datetime import datetime
+
+    fecha = os.path.basename(folder)
+    filename = f"datos_{fecha}.csv"
+    path = os.path.join(folder, filename)
+
+    # Guardar temporalmente el scraping actual
     temp_path = path + '.tmp'
     with open(temp_path, 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f, delimiter=',')
-        writer.writerows(data_con_fecha)
-    # Limpiar duplicados si ya existe el archivo final
-    df_new = pd.read_csv(temp_path, header=None)
-    if os.path.exists(path):
-        df_old = pd.read_csv(path, header=None)
-        df = pd.concat([df_old, df_new], ignore_index=True)
-        df = df.drop_duplicates(subset=[0])
+        writer.writerows(data)
+
+    # Buscar el último archivo CSV guardado en la carpeta (excluyendo el temporal)
+    csv_files = sorted(glob.glob(os.path.join(folder, 'datos_*.csv')))
+    last_csv = csv_files[-1] if csv_files else None
+
+    # Comparar el archivo temporal con el último CSV guardado
+    is_different = True
+    if last_csv:
+        with open(last_csv, 'r', encoding='utf-8') as f1, open(temp_path, 'r', encoding='utf-8') as f2:
+            is_different = f1.read() != f2.read()
+
+    if is_different:
+        os.replace(temp_path, path)
     else:
-        df = df_new
-    df.to_csv(path, index=False, header=False)
-    os.remove(temp_path)
+        os.remove(temp_path)
 
