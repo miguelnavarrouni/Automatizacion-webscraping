@@ -5,6 +5,9 @@ on:
     - cron: '*/5 * * * *' # Cada 5 minutos
   workflow_dispatch: # Permite ejecución manual
 
+permissions:
+  contents: write
+
 jobs:
   fetch-and-store:
     runs-on: ubuntu-latest
@@ -32,9 +35,11 @@ jobs:
           curl -L -A "Mozilla/5.0" -e "https://estadisticas.bcrp.gob.pe/" -o data/liquidez/$FECHA/datos.csv "https://estadisticas.bcrp.gob.pe/estadisticas/series/mensuales/exportar/PN00187MM/csv/1992-1/2025-5/"
 
       - name: Hacer commit si hay cambios
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
           git add data/
           git diff --cached --quiet || git commit -m "Datos actualizados $FECHA"
-          git push
+          git push https://github-actions:${GH_TOKEN}@github.com/miguelnavarrouni/Automatizacion-webscraping.git HEAD:main
