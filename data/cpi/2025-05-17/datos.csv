@@ -27,7 +27,7 @@
 <body >
     <script>IsDarkMode=false;</script>
     <form method="post" action="/peru/consumer-price-index-cpi" id="aspnetForm">
-<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="pL2+Rb1SuNX2JZ++CpWMFrTdQN780fiQ3he/GXuaQIoL5oXrqHjzBfyb9wOnGhOw6aO5oE3P2BKLpVHwTS5wvhdkG6Q=" />
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="nYEHH51SigOczr9gEi2GV+cvPb6GJC3DB8aokEqUHp/jJAFldL0WbEIoS3uCU6aOIQ2GHFgYCGiHjKnl5r6mFMBP9Ls=" />
 
 <script type="text/javascript" language="Javascript">var isCopyright = false;</script><script type="text/javascript" language="Javascript">var TESymbol = 'PERUCONPRIINDCPI'; console.log('TESymbol:', TESymbol);var TELanguage = 'es'; console.log('TELanguage:', TELanguage);TELastUpdate = '202505011007'; console.log('TELastUpdate:', TELastUpdate);TEChart = 'EC'; console.log('TEChart:', TEChart);var TEAlertsName= 'Peru Consumer Price Index (CPI)'; console.log('TEAlertsName:', TEAlertsName);</script><script type="text/javascript" language="Javascript">TEChartUrl = 'https://d3fy651gv2fhd3.cloudfront.net/charts/peru-consumer-price-index-cpi.png?s=peruconpriindcpi&v=202505011007V20230410&lang=all';TECountry = 'Peru';TECategory = 'Consumer Price Index CPI';TEType = 'te';TEFrequency = 'Monthly';TEForecast =   [115.66,116.10,116.45,117.63];</script>
 <input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="9ED6FB81" />
