@@ -1,0 +1,6 @@
+# Requisitos para el proyecto de automatización de datos
+
+# Instalar dependencias necesarias para scraping y API
+requests
+beautifulsoup4
+pandas

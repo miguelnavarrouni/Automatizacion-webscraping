@@ -24,15 +24,10 @@ jobs:
           mkdir -p data/cpi/$FECHA
           mkdir -p data/liquidez/$FECHA
 
-      - name: Descargar CPI (ejemplo CSV)
+      - name: Ejecutar scraping de liquidez y guardar CSV
         run: |
           FECHA=$(date +'%Y-%m-%d')
-          wget -O data/cpi/$FECHA/datos.csv "https://es.tradingeconomics.com/peru/consumer-price-index-cpi"
-
-      - name: Descargar Liquidez (CSV directo)
-        run: |
-          FECHA=$(date +'%Y-%m-%d')
-          curl -L -A "Mozilla/5.0" -e "https://estadisticas.bcrp.gob.pe/" -o data/liquidez/$FECHA/datos.csv "https://estadisticas.bcrp.gob.pe/estadisticas/series/mensuales/exportar/PN00187MM/csv/1992-1/2025-5/"
+          python -c "from src.liquidez_scraper import fetch_liquidez_table, save_to_csv; import os; os.makedirs(f'data/liquidez/{FECHA}', exist_ok=True); datos = fetch_liquidez_table(); save_to_csv(datos, f'data/liquidez/{FECHA}/datos.csv')"
 
       - name: Hacer commit si hay cambios
         env:
