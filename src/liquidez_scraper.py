@@ -36,6 +36,3 @@ def save_to_csv(data: List[List[str]], path: str):
         writer = csv.writer(f, delimiter=',')
         writer.writerows(data)
 
-# Ejemplo de uso manual:
-# datos = fetch_liquidez_table()
-# save_to_csv(datos, 'data/liquidez/2025-05-17/datos.csv')
