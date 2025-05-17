@@ -26,4 +26,3 @@ def fetch_cpi_mexico(init_date: str = '2015-01-01') -> pd.DataFrame:
     df = df.drop_duplicates()
     return df
 
-# Puedes reutilizar save_to_csv de liquidez_scraper para guardar el DataFrame

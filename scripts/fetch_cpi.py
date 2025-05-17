@@ -8,4 +8,4 @@ fecha = os.environ['FECHA']
 os.makedirs(f'data/cpi/{fecha}', exist_ok=True)
 
 datos = fetch_cpi_mexico()
-save_to_csv(datos, f'data/cpi/{fecha}')
+save_to_csv(datos, f'data/cpi/{fecha}', tipo='CPI')

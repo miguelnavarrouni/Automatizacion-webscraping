@@ -46,18 +46,22 @@ def fetch_liquidez_table() -> pd.DataFrame:
     df = df.drop_duplicates()
     return df
 
-def save_to_csv(data: pd.DataFrame, folder: str):
+def save_to_csv(data: pd.DataFrame, folder: str, tipo: str = ""):
     """
-    Guarda el DataFrame en un archivo CSV en la carpeta indicada, con nombre datos_YYYY-MM-DD.csv.
+    Guarda el DataFrame en un archivo CSV en la carpeta indicada, con nombre personalizado.
     Solo guarda un nuevo archivo si la data es diferente a la última guardada en la carpeta.
+    tipo: prefijo para el nombre del archivo (ej: 'CPI', 'Liquidez')
     """
     import glob
     fecha = os.path.basename(folder)
-    filename = f"datos_{fecha}.csv"
+    if tipo:
+        filename = f"datos{tipo}_{fecha}.csv"
+    else:
+        filename = f"datos_{fecha}.csv"
     path = os.path.join(folder, filename)
     temp_path = path + '.tmp'
     data.to_csv(temp_path, index=False)
-    csv_files = sorted(glob.glob(os.path.join(folder, 'datos_*.csv')))
+    csv_files = sorted(glob.glob(os.path.join(folder, f'datos{tipo}_*.csv')))
     last_csv = csv_files[-1] if csv_files else None
     is_different = True
     if last_csv:
