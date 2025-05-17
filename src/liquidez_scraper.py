@@ -25,7 +25,8 @@ def fetch_liquidez_table() -> List[List[str]]:
     datos = []
     for fila in filas:
         celdas = [celda.get_text(strip=True) for celda in fila.find_all(['th', 'td'])]
-        datos.append(celdas)
+        if celdas:  # Solo filas no vacías
+            datos.append(celdas)
     return datos
 
 def save_to_csv(data: List[List[str]], path: str):
