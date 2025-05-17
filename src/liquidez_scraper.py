@@ -14,6 +14,7 @@ URL = "https://estadisticas.bcrp.gob.pe/estadisticas/series/mensuales/resultados
 def fetch_liquidez_table() -> pd.DataFrame:
     """
     Extrae la tabla de liquidez en soles desde la web del BCRP y la retorna como DataFrame de dos columnas: Fecha, Liquidez.
+    Procesa la tabla por pares de columnas (fecha, valor) en cada fila, incluyendo el encabezado correcto.
     """
     resp = requests.get(URL, headers=HEADERS)
     resp.raise_for_status()
@@ -24,12 +25,24 @@ def fetch_liquidez_table() -> pd.DataFrame:
     filas = tabla.find_all('tr')
     fechas = []
     valores = []
+    # Procesar encabezado
+    encabezado = filas[0].find_all('th')
+    if len(encabezado) >= 2:
+        col_fecha = encabezado[0].get_text(strip=True)
+        col_valor = encabezado[1].get_text(strip=True)
+    else:
+        col_fecha = "Fecha"
+        col_valor = "Liquidez"
+    # Procesar datos
     for fila in filas[1:]:  # saltar encabezado
-        celdas = fila.find_all('td')
-        if len(celdas) == 2:
-            fechas.append(celdas[0].get_text(strip=True))
-            valores.append(celdas[1].get_text(strip=True))
-    df = pd.DataFrame({"Fecha": fechas, "Liquidez": valores})
+        celdas = [celda.get_text(strip=True) for celda in fila.find_all('td')]
+        for i in range(0, len(celdas)-1, 2):
+            fecha = celdas[i]
+            valor = celdas[i+1]
+            if fecha and valor:
+                fechas.append(fecha)
+                valores.append(valor)
+    df = pd.DataFrame({col_fecha: fechas, col_valor: valores})
     df = df.drop_duplicates()
     return df
 
