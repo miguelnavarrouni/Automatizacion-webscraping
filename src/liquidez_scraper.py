@@ -13,8 +13,8 @@ URL = "https://estadisticas.bcrp.gob.pe/estadisticas/series/mensuales/resultados
 
 def fetch_liquidez_table() -> List[List[str]]:
     """
-    Extrae la tabla de liquidez en soles desde la web del BCRP y la retorna como lista de listas (filas).
-    No guarda el archivo, solo retorna los datos.
+    Extrae la tabla de liquidez en soles desde la web del BCRP y la retorna como lista de listas (filas y columnas).
+    Cada fila de la tabla HTML será una fila en el CSV, y cada celda una columna.
     """
     resp = requests.get(URL, headers=HEADERS)
     resp.raise_for_status()
@@ -23,11 +23,10 @@ def fetch_liquidez_table() -> List[List[str]]:
     if not tablas:
         raise ValueError("No se encontró la tabla de liquidez en la página.")
     tabla_principal = tablas[0]
-    filas = tabla_principal.find_all('tr')
     datos = []
-    for fila in filas:
+    for fila in tabla_principal.find_all('tr'):
         celdas = [celda.get_text(strip=True) for celda in fila.find_all(['th', 'td'])]
-        if celdas:  # Solo filas no vacías
+        if celdas:
             datos.append(celdas)
     return datos
 
