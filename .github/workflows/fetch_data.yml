@@ -27,15 +27,13 @@ jobs:
           mkdir -p data/cpi/$FECHA
           mkdir -p data/liquidez/$FECHA
 
-      - id: fecha
+      - id: set_fecha
         run: echo "fecha=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
 
       - name: Ejecutar scraping de liquidez y guardar CSV
-        run: |
-          FECHA=$(date +'%Y-%m-%d')
-          python -c "import os; os.makedirs(f'data/liquidez/{os.environ[\'FECHA\']}', exist_ok=True); from src.liquidez_scraper import fetch_liquidez_table, save_to_csv; datos = fetch_liquidez_table(); save_to_csv(datos, f'data/liquidez/{os.environ[\'FECHA\']}/datos.csv')"
+        run: python scripts/fetch_liquidez.py
         env:
-          FECHA: ${{ steps.fecha.outputs.fecha }}
+          FECHA: ${{ steps.set_fecha.outputs.fecha }}
 
       - name: Hacer commit si hay cambios
         env:
