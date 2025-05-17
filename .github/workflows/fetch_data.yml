@@ -1,0 +1,40 @@
+name: Descargar datos públicos diarios
+
+on:
+  schedule:
+    - cron: '*/5 * * * *' # Cada 5 minutos
+  workflow_dispatch: # Permite ejecución manual
+
+jobs:
+  fetch-and-store:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar dependencias
+        run: sudo apt-get update && sudo apt-get install -y wget jq
+
+      - name: Crear carpetas por fecha
+        run: |
+          FECHA=$(date +'%Y-%m-%d')
+          mkdir -p data/cpi/$FECHA
+          mkdir -p data/liquidez/$FECHA
+
+      - name: Descargar CPI (ejemplo CSV)
+        run: |
+          FECHA=$(date +'%Y-%m-%d')
+          wget -O data/cpi/$FECHA/datos.csv "https://es.tradingeconomics.com/peru/consumer-price-index-cpi"
+
+      - name: Descargar Liquidez (CSV directo)
+        run: |
+          FECHA=$(date +'%Y-%m-%d')
+          wget -O data/liquidez/$FECHA/datos.csv "https://estadisticas.bcrp.gob.pe/estadisticas/series/mensuales/exportar/PN00187MM/csv/1992-1/2025-5/"
+
+      - name: Hacer commit si hay cambios
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add data/
+          git diff --cached --quiet || git commit -m "Datos actualizados $FECHA"
+          git push
