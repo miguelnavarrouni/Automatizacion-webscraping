@@ -29,7 +29,7 @@ jobs:
       - name: Descargar Liquidez (CSV directo)
         run: |
           FECHA=$(date +'%Y-%m-%d')
-          wget -O data/liquidez/$FECHA/datos.csv "https://estadisticas.bcrp.gob.pe/estadisticas/series/mensuales/exportar/PN00187MM/csv/1992-1/2025-5/"
+          wget --user-agent="Mozilla/5.0" -O data/liquidez/$FECHA/datos.csv "https://estadisticas.bcrp.gob.pe/estadisticas/series/mensuales/exportar/PN00187MM/csv/1992-1/2025-5/"
 
       - name: Hacer commit si hay cambios
         run: |
