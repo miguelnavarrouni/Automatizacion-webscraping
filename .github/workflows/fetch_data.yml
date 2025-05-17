@@ -36,6 +36,14 @@ jobs:
           FECHA: ${{ steps.set_fecha.outputs.fecha }}
           PYTHONPATH: ${{ github.workspace }}
 
+      - name: Ejecutar scraping de CPI y guardar CSV
+        run: |
+          export apikey="faa358f6f7f04bd:6e5oybna243wl1s"
+          python scripts/fetch_cpi.py
+        env:
+          FECHA: ${{ steps.set_fecha.outputs.fecha }}
+          PYTHONPATH: ${{ github.workspace }}
+
       - name: Hacer commit si hay cambios
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
